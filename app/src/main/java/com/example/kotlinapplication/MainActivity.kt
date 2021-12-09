@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import org.w3c.dom.Text
 
@@ -84,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             val textView = numberTextViewList[pickNumberSet.size]
             textView.isVisible = true
             textView.text = numberPicker.value.toString()
-
+            setNumberBackground(numberPicker.value, textView)
             pickNumberSet.add(numberPicker.value)
 
         }
@@ -100,10 +101,20 @@ class MainActivity : AppCompatActivity() {
 
                 textView.text = number.toString()
                 textView.isVisible = true
+
+                setNumberBackground(number ,textView)
+
             }
-            Log.d("MainActivity", list.toString())
+        }
+    }
 
-
+    private fun setNumberBackground(number:Int, textView: TextView) {
+        when(number) {
+            in 1..10 -> textView.background = ContextCompat.getDrawable(this, R.drawable.circle_yellow)
+            in 11..20 -> textView.background = ContextCompat.getDrawable(this, R.drawable.circle_blue)
+            in 21..30 -> textView.background = ContextCompat.getDrawable(this, R.drawable.circle_red)
+            in 31..40 -> textView.background = ContextCompat.getDrawable(this, R.drawable.circle_gray)
+            else -> textView.background = ContextCompat.getDrawable(this, R.drawable.circle_green)
         }
     }
 
