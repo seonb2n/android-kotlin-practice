@@ -13,7 +13,7 @@ import androidx.core.content.edit
 
 class MainActivity : AppCompatActivity() {
 
-    private val numberPicker1: NumberPicker by lazy{
+    private val numberPicker1: NumberPicker by lazy {
         findViewById<NumberPicker>(R.id.numberPicker1)
             .apply {
                 minValue = 0
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private val numberPicker2: NumberPicker by lazy{
+    private val numberPicker2: NumberPicker by lazy {
         findViewById<NumberPicker>(R.id.numberPicker2)
             .apply {
                 minValue = 0
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private val numberPicker3: NumberPicker by lazy{
+    private val numberPicker3: NumberPicker by lazy {
         findViewById<NumberPicker>(R.id.numberPicker3)
             .apply {
                 minValue = 0
@@ -59,14 +59,15 @@ class MainActivity : AppCompatActivity() {
 
         openButton.setOnClickListener {
 
-            if(changePasswordMode) {
+            if (changePasswordMode) {
                 Toast.makeText(this, "비밀번호 변경 중", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val passwordPreferences = getSharedPreferences("psssword", Context.MODE_PRIVATE)
-            val passwordFromUser = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
-            if(passwordPreferences.getString("password", "000").equals(passwordFromUser)) {
+            val passwordFromUser =
+                "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
+            if (passwordPreferences.getString("password", "000").equals(passwordFromUser)) {
                 Log.d(">>>", "Open!")
                 val nextIntent = Intent(this, DiaryActivity::class.java)
                 startActivity(nextIntent)
@@ -79,9 +80,10 @@ class MainActivity : AppCompatActivity() {
         changePasswordButton.setOnClickListener {
 
             val passwordPreferences = getSharedPreferences("psssword", Context.MODE_PRIVATE)
-            val passwordFromUser = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
+            val passwordFromUser =
+                "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
 
-            if(changePasswordMode) {
+            if (changePasswordMode) {
                 //번호를 저장하는 기능
                 passwordPreferences.edit(true) {
                     putString("password", passwordFromUser)
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 //change password mode 활성화
 
-                if(passwordPreferences.getString("password", "000").equals(passwordFromUser)) {
+                if (passwordPreferences.getString("password", "000").equals(passwordFromUser)) {
                     changePasswordMode = true
                     Toast.makeText(this, "변경할 패스워드를 입력해주세요", Toast.LENGTH_SHORT).show()
                     changePasswordButton.setBackgroundColor(Color.RED)
