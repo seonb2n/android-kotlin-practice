@@ -15,6 +15,7 @@
         android:fontFamily="@font/bom_font_ttf"
         android:text="The Secret Diary"
         android:textColor="@color/black"
+        android:layout_marginBottom="30dp"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/passwordLayout"
