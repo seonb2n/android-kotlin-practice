@@ -1,8 +1,10 @@
 package com.example.kotlinapplication
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -65,8 +67,9 @@ class MainActivity : AppCompatActivity() {
             val passwordPreferences = getSharedPreferences("psssword", Context.MODE_PRIVATE)
             val passwordFromUser = "${numberPicker1.value}${numberPicker2.value}${numberPicker3.value}"
             if(passwordPreferences.getString("password", "000").equals(passwordFromUser)) {
-                //패스워드 성공
-                //startActivity()
+                Log.d(">>>", "Open!")
+                val nextIntent = Intent(this, DiaryActivity::class.java)
+                startActivity(nextIntent)
             } else {
                 errorDialog()
                 //실패
@@ -99,7 +102,6 @@ class MainActivity : AppCompatActivity() {
                     errorDialog()
                     //실패
                 }
-
             }
 
         }
