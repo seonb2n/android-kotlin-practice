@@ -19,7 +19,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.KotlinApplication.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.KotlinApplication.AppBarOverlay" parent="Theme.AppCompat.DayNight.NoActionBar" />
 
     <style name="Theme.KotlinApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
