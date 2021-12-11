@@ -1,19 +1,13 @@
 package com.example.kotlinapplication
 
-import android.content.Context
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.edit
+import java.lang.NumberFormatException
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var hasOperator = false
 
     fun buttonClicked(v: View) {
-        when(v.id) {
+        when (v.id) {
             R.id.button0 -> numberButtonClicked("0")
             R.id.button1 -> numberButtonClicked("1")
             R.id.button2 -> numberButtonClicked("2")
@@ -71,8 +65,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         expressionTextView.append(number)
-
         //TODO 계산 결과 resultView 에 set
+        resultTextView.text = calculateExpression()
+
     }
 
     private fun operatorButtonClicked(operator: String) {
@@ -84,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         when {
             isOperator -> {
                 //방금 입력한 연산자가 존재
-                val text= expressionTextView.text.toString()
+                val text = expressionTextView.text.toString()
                 expressionTextView.text = text.dropLast(1) + operator
             }
             hasOperator -> {
@@ -101,9 +96,10 @@ class MainActivity : AppCompatActivity() {
         val ssb = SpannableStringBuilder(expressionTextView.text)
         ssb.setSpan(
             ForegroundColorSpan(getColor(R.color.green)),
-            expressionTextView.text.length -1,
+            expressionTextView.text.length - 1,
             expressionTextView.text.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
 
         expressionTextView.text = ssb
         isOperator = true
@@ -111,7 +107,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clearButtonClicked(v: View) {
-
+        expressionTextView.text = ""
+        resultTextView.text = ""
+        isOperator = false
+        hasOperator = false
     }
 
     fun historyButtonClicked(v: View) {
@@ -119,6 +118,65 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun resultButtonClicked(v: View) {
+        val expressionTexts = expressionTextView.text.split(" ")
 
+        //비어있거나 숫자만 있을 때
+        if (expressionTextView.text.isEmpty() || expressionTexts.size == 1) {
+            return
+        }
+
+        //개수가 3개가 안되고, 연산자가 존재할 때
+        if (expressionTexts.size != 3 && hasOperator) {
+            Toast.makeText(this, "아직 식이 완성되지 않았습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        //숫자가 아닐 떄
+        if (expressionTexts[0].isNumber().not() || expressionTexts[2].isNumber().not()) {
+            Toast.makeText(this, "숫자 변환 과정에서 오류가 발생했습니다..", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        //계산 진행
+        val expressionText = expressionTextView.text.toString()
+        val resulText = calculateExpression()
+
+        resultTextView.text = ""
+        expressionTextView.text = resulText
+
+        isOperator = false
+        hasOperator = false
+
+    }
+
+    private fun calculateExpression(): String {
+        val expressionTexts = expressionTextView.text.split(" ")
+        if (hasOperator.not() || expressionTexts.size != 3) {
+            return ""
+        } else if (expressionTexts[0].isNumber().not() || expressionTexts[2].isNumber().not()) {
+            return ""
+        }
+
+        val exp1 = expressionTexts[0].toBigInteger()
+        val exp2 = expressionTexts[2].toBigInteger()
+        val op = expressionTexts[1]
+
+        return when (op) {
+            "+" -> (exp1 + exp2).toString()
+            "-" -> (exp1 - exp2).toString()
+            "*" -> (exp1 * exp2).toString()
+            "/" -> (exp1 / exp2).toString()
+            "%" -> (exp1 % exp2).toString()
+            else -> ""
+        }
+    }
+}
+
+fun String.isNumber(): Boolean {
+    try {
+        this.toBigInteger()
+        return true
+    } catch (e: NumberFormatException) {
+        return false
     }
 }
