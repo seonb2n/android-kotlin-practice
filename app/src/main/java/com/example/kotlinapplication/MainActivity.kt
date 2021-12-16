@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private val startPhotoFrameModeButton: Button by lazy {
         findViewById(R.id.startPhotoFrameModeButton)
-    }
+    }  
 
     private val getContent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
