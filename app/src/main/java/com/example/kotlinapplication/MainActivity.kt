@@ -5,9 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,12 +26,29 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.startPhotoFrameModeButton)
     }
 
+    private val getContent =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val selectedImageUri: Uri? = result.data?.data
+            if (selectedImageUri != null) {
+                if(imageUriList.size == 6) {
+                    Toast.makeText(this, "사진이 꽉 찼습니다.", Toast.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+                imageUriList.add(selectedImageUri)
+                imageViewList[imageUriList.size-1].setImageURI(selectedImageUri)
+
+            } else {
+                Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         initAddPhotoButton()
         initStartPhotoFrameModeButton()
+
     }
 
     private val imageViewList: List<ImageView> by lazy {
@@ -62,7 +83,6 @@ class MainActivity : AppCompatActivity() {
                     this, android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     navigatePhotos()
-
                 }
 
                 shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) -> {
@@ -77,39 +97,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun navigatePhotos() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
         intent.type = "image/*"
-        startActivityForResult(intent, 2000)
+        getContent.launch(intent)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (resultCode != Activity.RESULT_OK) {
-            return
-        }
-
-        when(requestCode) {
-            2000 -> {
-                val selectedImageUri: Uri? = data?.data
-                if (selectedImageUri != null) {
-
-                    if(imageUriList.size == 6) {
-                        Toast.makeText(this, "사진이 꽉 찼습니다.", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-
-                    imageUriList.add(selectedImageUri)
-                    imageViewList[imageUriList.size-1].setImageURI(selectedImageUri)
-
-                } else {
-                    Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-                }
-            }
-            else -> {
-                Toast.makeText(this, "사진을 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
