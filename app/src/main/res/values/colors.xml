@@ -14,4 +14,6 @@
     <color name="green">#7aaf3b</color>
     <color name="greenPress">#518c2f</color>
     <color name="buttonPressGray">#e2e2e2</color>
+    <color name="pomodoro_red">#FFD32F2F</color>
+    <color name="transparent">#00000000</color>
 </resources>
