@@ -10,9 +10,8 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/pomodoro_red</item>
+        <item name="android:statusBarColor">@color/white</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/pomodoro_red</item>
 
     </style>
     <style name="Theme.KotlinApplication.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
