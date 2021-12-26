@@ -1,172 +1,134 @@
 package com.example.kotlinapplication
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.media.MediaPlayer
-import android.media.MediaRecorder
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.widget.Button
+import android.view.inputmethod.EditorInfo
+import android.webkit.URLUtil
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class MainActivity : AppCompatActivity() {
 
-    private val resetButton: Button by lazy {
-        findViewById(R.id.resetButton)
+    private val goHomeButton: ImageButton by lazy {
+        findViewById(R.id.goHomeButton)
     }
 
-    private val recordTimeView: CountUpTextView by lazy {
-        findViewById(R.id.recordTimeTextView)
+    private val goBackButton: ImageButton by lazy {
+        findViewById(R.id.goBackButton)
     }
 
-    private val recordButton: RecordButton by lazy {
-        findViewById(R.id.recordButton)
+    private val goForwardButton: ImageButton by lazy {
+        findViewById(R.id.goForwardButton)
     }
 
-    private val soundVisualizerView: SoundVisualizerView by lazy {
-        findViewById(R.id.soundVisualizerView)
+    private val webView: WebView by lazy {
+        findViewById(R.id.webView)
     }
 
-    private val requiredPermissions = arrayOf(Manifest.permission.RECORD_AUDIO)
-
-    private var recorder: MediaRecorder? = null
-
-    private val recordingFilePath: String by lazy {
-        "${externalCacheDir?.absolutePath}/recording.3gp"
+    private val addressBar: EditText by lazy {
+        findViewById(R.id.addressBar)
     }
 
-    private var player: MediaPlayer? = null
+    private val refreshLayout: SwipeRefreshLayout by lazy {
+        findViewById(R.id.refreshLayout)
+    }
 
-    private var state = State.BEFORE_RECORDING
-        set(value) {
-            field = value
-            resetButton.isEnabled =
-                (value == State.AFTER_RECORDING) ||
-                        (value == State.ON_PLAYING)
-            recordButton.updateIconWithState(value)
-        }
+    private val progressBar: ContentLoadingProgressBar by lazy {
+        findViewById(R.id.progressBar)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        requestAudioPermission()
         initViews()
         bindViews()
-        initVariables() //state set 활성화
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val audioRecordPermissionGranted =
-            requestCode == REQUEST_RECORD_AUDIO_PERMISSION &&
-                    grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
-
-        if (!audioRecordPermissionGranted) {
-            finish()
+    override fun onBackPressed() {
+        if(webView.canGoBack()) {
+            webView.goBack()
+        } else {
+            super.onBackPressed()
         }
-    }
-
-    //앱이 시작될 때 권한을 요청하기 위한 함수
-    private fun requestAudioPermission() {
-        requestPermissions(requiredPermissions, REQUEST_RECORD_AUDIO_PERMISSION)
-    }
-
-    companion object {
-        private const val REQUEST_RECORD_AUDIO_PERMISSION = 201
-    }
-
-    private fun initViews() {
-        recordButton.updateIconWithState(state)
     }
 
     private fun bindViews() {
-        soundVisualizerView.onRequestCurrentAmplitude = {
-            recorder?.maxAmplitude ?: 0
-        }
-
-        resetButton.setOnClickListener {
-            stopPlaying()
-            soundVisualizerView.clearVisualizing()
-            recordTimeView.clearCountTime()
-            state = State.BEFORE_RECORDING
-        }
-
-        recordButton.setOnClickListener {
-            when(state) {
-                State.BEFORE_RECORDING -> {
-                    startRecording()
-                }
-
-                State.ON_RECORDING -> {
-                    stopRecording()
-                }
-                State.AFTER_RECORDING -> {
-                    startPlaying()
-                }
-                State.ON_PLAYING -> {
-                    stopPlaying()
+        addressBar.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE) {
+                val loadingUrl = v.text.toString()
+                if(URLUtil.isNetworkUrl(loadingUrl)) {
+                    webView.loadUrl(v.text.toString())
+                } else {
+                    webView.loadUrl("http://$loadingUrl")
                 }
             }
+
+            return@setOnEditorActionListener false
+        }
+
+        goBackButton.setOnClickListener {
+            webView.goBack()
+        }
+
+        goForwardButton.setOnClickListener {
+            webView.goForward()
+        }
+
+        goHomeButton.setOnClickListener {
+            webView.loadUrl(DEFAULT_URL)
+        }
+
+        refreshLayout.setOnRefreshListener {
+            webView.reload()
         }
     }
 
-    private fun initVariables() {
-        state = State.BEFORE_RECORDING
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initViews() {
+        webView.apply {
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+            settings.javaScriptEnabled = true
+            loadUrl(DEFAULT_URL)
+        }
     }
 
-    private fun startRecording() {
-        recorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFile(recordingFilePath)
-            prepare()
+    inner class WebViewClient: android.webkit.WebViewClient() {
+
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+            progressBar.show()
         }
-        soundVisualizerView.startVisualizing(false)
-        recorder?.start()
-        recordTimeView.startCountUp()
-        state = State.ON_RECORDING
+
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+
+            refreshLayout.isRefreshing = false
+            progressBar.hide()
+            goBackButton.isEnabled = webView.canGoBack()
+            goForwardButton.isEnabled = webView.canGoForward()
+            addressBar.setText(url)
+        }
     }
 
-    private fun stopRecording() {
-        recorder?.run {
-            stop()
-            release()
+    inner class WebChromeClient: android.webkit.WebChromeClient() {
+        override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            super.onProgressChanged(view, newProgress)
+
+            progressBar.progress = newProgress
         }
-        recorder = null
-        recordTimeView.stopCountUp()
-        soundVisualizerView.stopVisualizing()
-        state = State.AFTER_RECORDING
     }
 
-    private fun startPlaying() {
-        player = MediaPlayer().apply {
-            setDataSource(recordingFilePath)
-            prepare()
-        }
-        player?.setOnCompletionListener {
-            stopPlaying()
-            state = State.AFTER_RECORDING
-        }
-        player?.start()
-        recordTimeView.startCountUp()
-        soundVisualizerView.startVisualizing(true)
-        state = State.ON_PLAYING
-    }
-
-    private fun stopPlaying() {
-        player?.run {
-            release()
-        }
-        soundVisualizerView.stopVisualizing()
-        player = null
-        recordTimeView.stopCountUp()
-        state = State.AFTER_RECORDING
+    companion object {
+        private const val DEFAULT_URL = "http://www.google.com"
     }
 
 }
