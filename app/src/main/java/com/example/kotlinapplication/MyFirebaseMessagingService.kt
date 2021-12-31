@@ -3,10 +3,7 @@ package com.example.kotlinapplication
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -42,19 +39,11 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         messageContent: String?
     ): Notification {
 
-        val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("notificationType", "${type.title} 타입")
-            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) //기존의 화면을 갱신하는 형태로 새로운 액티비티가 실행
-        }
-        val pendingIntent = PendingIntent.getActivity(this, type.id, intent, FLAG_UPDATE_CURRENT) //마지막에 온 메시지 type에 대해 intent 를 업데이트
-
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_baseline_notifications_24)
             .setContentTitle(title)
             .setContentText(messageContent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
 
         when(type) {
             NotificationType.NORMAL -> Unit
@@ -62,8 +51,9 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
                 notificationBuilder.setStyle(
                     NotificationCompat.BigTextStyle()
                         .bigText(
-                            "😒 😞 😔 😟 😕 🙁 ☹ \n \n \n \n"+
-                                    messageContent
+                            "😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤬 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶"+
+                                    "\uD83D\uDE00 \uD83D\uDE03 \uD83D\uDE04 \uD83D\uDE01 \uD83D\uDE06 \uD83D\uDE05 \uD83D\uDE02 \uD83E\uDD23 \uD83E\uDD72 ☺️ \uD83D\uDE0A \uD83D\uDE07 \uD83D\uDE42 \uD83D\uDE43 \uD83D\uDE09 \uD83D\uDE0C \uD83D\uDE0D"+
+                                    " \uD83E\uDD70 \uD83D\uDE18 \uD83D\uDE17 \uD83D\uDE19 \uD83D\uDE1A \uD83D\uDE0B"
                         )
                 )
             }
