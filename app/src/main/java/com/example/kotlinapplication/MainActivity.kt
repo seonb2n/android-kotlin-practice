@@ -25,14 +25,6 @@ import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewPager: ViewPager2 by lazy {
-        findViewById(R.id.viewPager)
-    }
-
-    private val progressBar: ProgressBar by lazy {
-        findViewById(R.id.progreeBar)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
