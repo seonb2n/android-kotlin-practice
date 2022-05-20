@@ -6,7 +6,7 @@ import com.example.kotlinapplication.domain.UseCase
 
 internal class GetToDoListUseCase(
     private val toDoRepository: ToDoRepository
-): UseCase{
+): UseCase {
     suspend operator fun invoke():List<ToDoEntity> {
         return toDoRepository.getToDoList()
     }
