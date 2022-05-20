@@ -1,6 +1,7 @@
 package com.example.kotlinapplication
 
 import android.app.Application
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.example.kotlinapplication.di.appModule
 import com.example.kotlinapplication.di.appTestModule
@@ -13,6 +14,8 @@ import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -21,11 +24,16 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
 
+@RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
-internal class ViewModelTest: KoinTest{
+internal abstract class ViewModelTest: KoinTest{
 
     @get: Rule
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+    @get: Rule
+    val rule = InstantTaskExecutorRule()
+
 
     @Mock
     private lateinit var context: Application

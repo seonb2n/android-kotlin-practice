@@ -1,8 +1,6 @@
 package com.example.kotlinapplication.livedata
 
 import androidx.lifecycle.Observer
-import java.lang.AssertionError
-import kotlin.math.exp
 
 class LiveDataTestObserver<T> : Observer<T> {
 
