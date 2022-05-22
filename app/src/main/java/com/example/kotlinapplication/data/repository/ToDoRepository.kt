@@ -5,6 +5,7 @@ import com.example.kotlinapplication.data.entity.ToDoEntity
 /**
  * 1. insertToDoList
  * 2. getToDoList
+ * 3. updateToDoItem
  */
 
 interface ToDoRepository {
@@ -13,4 +14,13 @@ interface ToDoRepository {
 
     suspend fun insertToDoList(toDoList: List<ToDoEntity>)
 
+    suspend fun insertTodoItem(toDoItem: ToDoEntity): Long
+
+    suspend fun updateToDoItem(toDoEntity: ToDoEntity): Boolean
+
+    suspend fun getToDoItem(itemId: Long): ToDoEntity?
+
+    suspend fun deleteAll()
+
+    suspend fun deleteToDoItem(itemId: Long): Boolean
 }

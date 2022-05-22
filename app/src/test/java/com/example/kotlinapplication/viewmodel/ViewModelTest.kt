@@ -1,9 +1,8 @@
-package com.example.kotlinapplication
+package com.example.kotlinapplication.viewmodel
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.example.kotlinapplication.di.appModule
 import com.example.kotlinapplication.di.appTestModule
 import com.example.kotlinapplication.livedata.LiveDataTestObserver
 import kotlinx.coroutines.Dispatchers
