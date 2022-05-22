@@ -77,7 +77,13 @@ internal class ListViewModelTest: ViewModelTest() {
     // Test : 데이터를 다 날렸을 때 잘 반영되는지
     @Test
     fun `test Item Delete All`(): Unit = runBlockingTest {
-
+        val testObservable = viewModel.toDoListLiveData.test()
+        viewModel.deleteAll()
+        testObservable.assertValueSequence(
+            listOf(
+                listOf()
+            )
+        )
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kotlinapplication.data.entity.ToDoEntity
+import com.example.kotlinapplication.domain.todo.DeleteAllToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.GetToDoListUseCase
 import com.example.kotlinapplication.domain.todo.UpdateToDoUseCase
 import kotlinx.coroutines.Job
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
  */
 internal class ListViewModel(
     private val getToDoListUseCase: GetToDoListUseCase,
-    private val updateToDoUseCase: UpdateToDoUseCase
+    private val updateToDoUseCase: UpdateToDoUseCase,
+    private val deleteAllToDoItemUseCase: DeleteAllToDoItemUseCase
 ): ViewModel() {
 
     private var _toDoListLiveData = MutableLiveData<List<ToDoEntity>>()
@@ -30,5 +32,10 @@ internal class ListViewModel(
 
     fun updateEntity(todoEntity: ToDoEntity) = viewModelScope.launch {
         val success = updateToDoUseCase(todoEntity)
+    }
+
+    fun deleteAll() = viewModelScope.launch {
+        deleteAllToDoItemUseCase()
+        _toDoListLiveData.postValue(listOf())
     }
 }
