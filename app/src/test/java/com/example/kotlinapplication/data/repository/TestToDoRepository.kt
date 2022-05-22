@@ -14,8 +14,9 @@ class TestToDoRepository : ToDoRepository {
         this.toDoList.addAll(toDoList)
     }
 
-    override suspend fun insertTodoItem(toDoItem: ToDoEntity) {
+    override suspend fun insertTodoItem(toDoItem: ToDoEntity): Long {
         this.toDoList.add(toDoItem)
+        return toDoItem.id
     }
 
     override suspend fun updateToDoItem(toDoEntity: ToDoEntity): Boolean {

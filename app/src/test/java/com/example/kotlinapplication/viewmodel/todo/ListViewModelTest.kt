@@ -1,6 +1,6 @@
 package com.example.kotlinapplication.viewmodel.todo
 
-import com.example.kotlinapplication.ViewModelTest
+import com.example.kotlinapplication.viewmodel.ViewModelTest
 import com.example.kotlinapplication.data.entity.ToDoEntity
 import com.example.kotlinapplication.domain.todo.GetToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.InsertToDoListUseCase
