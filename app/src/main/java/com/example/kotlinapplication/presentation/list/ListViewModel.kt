@@ -23,19 +23,21 @@ internal class ListViewModel(
     private val deleteAllToDoItemUseCase: DeleteAllToDoItemUseCase
 ): ViewModel() {
 
-    private var _toDoListLiveData = MutableLiveData<List<ToDoEntity>>()
-    val toDoListLiveData: LiveData<List<ToDoEntity>> = _toDoListLiveData
+    private var _toDoListLiveData = MutableLiveData<ToDoListState>(ToDoListState.UnInitialized)
+    val toDoListLiveData: LiveData<ToDoListState> = _toDoListLiveData
 
     fun fetchData(): Job = viewModelScope.launch {
-        _toDoListLiveData.postValue(getToDoListUseCase())
+        _toDoListLiveData.postValue(ToDoListState.Loading)
+        _toDoListLiveData.postValue(ToDoListState.Success(getToDoListUseCase()))
     }
 
     fun updateEntity(todoEntity: ToDoEntity) = viewModelScope.launch {
-        val success = updateToDoUseCase(todoEntity)
+        updateToDoUseCase(todoEntity)
     }
 
     fun deleteAll() = viewModelScope.launch {
+        _toDoListLiveData.postValue(ToDoListState.Loading)
         deleteAllToDoItemUseCase()
-        _toDoListLiveData.postValue(listOf())
+        _toDoListLiveData.postValue(ToDoListState.Success(getToDoListUseCase()))
     }
 }

@@ -5,6 +5,7 @@ import com.example.kotlinapplication.data.entity.ToDoEntity
 import com.example.kotlinapplication.domain.todo.GetToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.InsertToDoListUseCase
 import com.example.kotlinapplication.presentation.list.ListViewModel
+import com.example.kotlinapplication.presentation.list.ToDoListState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -56,7 +57,9 @@ internal class ListViewModelTest: ViewModelTest() {
         viewModel.fetchData()
         testObserver.assertValueSequence(
             listOf(
-                mockList
+                ToDoListState.UnInitialized,
+                ToDoListState.Loading,
+                ToDoListState.Success(mockList)
             )
         )
     }
@@ -81,7 +84,9 @@ internal class ListViewModelTest: ViewModelTest() {
         viewModel.deleteAll()
         testObservable.assertValueSequence(
             listOf(
-                listOf()
+                ToDoListState.UnInitialized,
+                ToDoListState.Loading,
+                ToDoListState.Success(listOf())
             )
         )
     }
