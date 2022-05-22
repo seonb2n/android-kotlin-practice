@@ -2,6 +2,7 @@ package com.example.kotlinapplication.viewmodel.todo
 
 import com.example.kotlinapplication.ViewModelTest
 import com.example.kotlinapplication.data.entity.ToDoEntity
+import com.example.kotlinapplication.domain.todo.GetToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.InsertToDoListUseCase
 import com.example.kotlinapplication.presentation.list.ListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,6 +24,7 @@ internal class ListViewModelTest: ViewModelTest() {
     private val viewModel: ListViewModel by inject()
 
     private val insertToDoListUseCase: InsertToDoListUseCase by inject()
+    private val getToDoItemUseCase: GetToDoItemUseCase by inject()
 
     private val mockList = (0 until 10).map {
         ToDoEntity(
@@ -57,6 +59,25 @@ internal class ListViewModelTest: ViewModelTest() {
                 mockList
             )
         )
+    }
+
+    // Test : 데이터를 업데이트 했을 때 반영되는지
+    @Test
+    fun `test Item Update`(): Unit = runBlockingTest {
+        val todo = ToDoEntity(
+            id = 1,
+            title = "title 1",
+            description = "description 1",
+            hasCompleted = true
+        )
+        viewModel.updateEntity(todo)
+        assert((getToDoItemUseCase(todo.id)?.hasCompleted ?: false) == todo.hasCompleted)
+    }
+
+    // Test : 데이터를 다 날렸을 때 잘 반영되는지
+    @Test
+    fun `test Item Delete All`(): Unit = runBlockingTest {
+
     }
 
 }
