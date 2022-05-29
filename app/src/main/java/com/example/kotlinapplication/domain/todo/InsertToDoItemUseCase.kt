@@ -9,7 +9,7 @@ class InsertToDoItemUseCase(
 ): UseCase {
 
     suspend operator fun invoke(toDoItem: ToDoEntity): Long {
-        return toDoRepository.insertTodoItem(toDoItem)
+        return toDoRepository.insertToDoItem(toDoItem)
     }
 
 }
