@@ -17,7 +17,8 @@ import kotlinx.coroutines.launch
  * 2. [UpdateToDoUseCase]
  * 3. [DeleteAllToDoItemUseCase]
  */
-internal class ListViewModel(
+internal class ListViewModel
+    (
     private val getToDoListUseCase: GetToDoListUseCase,
     private val updateToDoUseCase: UpdateToDoUseCase,
     private val deleteAllToDoItemUseCase: DeleteAllToDoItemUseCase
