@@ -63,6 +63,10 @@ internal class DetailViewModel(
         }
     }
 
+    fun setModifyMode() = viewModelScope.launch {
+        _toDoDetailLiveData.postValue(ToDoDetailState.Modify)
+    }
+
     fun writeToDo(title: String, description: String) = viewModelScope.launch {
         _toDoDetailLiveData.postValue(ToDoDetailState.Loading)
         when (detailMode) {
@@ -96,4 +100,5 @@ internal class DetailViewModel(
             }
         }
     }
+
 }
