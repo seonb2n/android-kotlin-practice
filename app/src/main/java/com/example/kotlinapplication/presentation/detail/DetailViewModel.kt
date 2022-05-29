@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.kotlinapplication.data.entity.ToDoEntity
-import com.example.kotlinapplication.domain.todo.DeletelToDoItemUseCase
+import com.example.kotlinapplication.domain.todo.DeleteToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.GetToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.InsertToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.UpdateToDoUseCase
@@ -22,7 +22,7 @@ internal class DetailViewModel(
     var detailMode: DetailMode,
     var id: Long = -1,
     private val getToDoItemUseCase: GetToDoItemUseCase,
-    private val deleteToDoItemUseCase: DeletelToDoItemUseCase,
+    private val deleteToDoItemUseCase: DeleteToDoItemUseCase,
     private val updateToDoUseCase: UpdateToDoUseCase,
     private val insertToDoItemUseCase: InsertToDoItemUseCase
 ) : BaseViewModel() {
@@ -55,12 +55,8 @@ internal class DetailViewModel(
     fun deleteTodo() = viewModelScope.launch {
         _toDoDetailLiveData.postValue(ToDoDetailState.Loading)
         try {
-            if (deleteToDoItemUseCase(id)) {
-                _toDoDetailLiveData.postValue(ToDoDetailState.Delete)
-            } else {
-                _toDoDetailLiveData.postValue(ToDoDetailState.Error)
-            }
-
+            deleteToDoItemUseCase(id)
+            _toDoDetailLiveData.postValue(ToDoDetailState.Delete)
         } catch (e: Exception) {
             e.printStackTrace()
             _toDoDetailLiveData.postValue(ToDoDetailState.Error)

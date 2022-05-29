@@ -4,10 +4,12 @@ import com.example.kotlinapplication.data.entity.ToDoEntity
 import com.example.kotlinapplication.data.repository.ToDoRepository
 import com.example.kotlinapplication.domain.UseCase
 
-internal class DeletelToDoItemUseCase(
+internal class DeleteToDoItemUseCase(
     private val toDoRepository: ToDoRepository
 ): UseCase {
-    suspend operator fun invoke(itemId: Long): Boolean {
-        return toDoRepository.deleteToDoItem(itemId)
+
+    suspend operator fun invoke(id: Long) {
+        return toDoRepository.deleteToDoItem(id)
     }
+
 }

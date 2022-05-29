@@ -14,19 +14,19 @@ class TestToDoRepository : ToDoRepository {
         this.toDoList.addAll(toDoList)
     }
 
-    override suspend fun insertTodoItem(toDoItem: ToDoEntity): Long {
-        this.toDoList.add(toDoItem)
-        return toDoItem.id
+    override suspend fun insertToDoItem(toDoEntity: ToDoEntity): Long {
+        this.toDoList.add(toDoEntity)
+        return toDoList.indexOf(toDoEntity).toLong()
     }
 
-    override suspend fun updateToDoItem(toDoEntity: ToDoEntity): Boolean {
+    override suspend fun updateToDoItem(toDoEntity: ToDoEntity) {
         val foundToDoEntity = toDoList.find { it.id == toDoEntity.id }
-        return if (foundToDoEntity == null) {
-            false
-        } else {
-            this.toDoList[toDoList.indexOf(foundToDoEntity)] = toDoEntity
-            true
-        }
+//        return if (foundToDoEntity == null) {
+//            false
+//        } else {
+//            this.toDoList[toDoList.indexOf(foundToDoEntity)] = toDoEntity
+//            true
+//        }
     }
 
     override suspend fun getToDoItem(itemId: Long): ToDoEntity? {
@@ -37,13 +37,13 @@ class TestToDoRepository : ToDoRepository {
         this.toDoList.clear()
     }
 
-    override suspend fun deleteToDoItem(itemId: Long): Boolean {
+    override suspend fun deleteToDoItem(itemId: Long) {
         val foundToDoEntity = toDoList.find { it.id == itemId }
-        return if(foundToDoEntity == null) {
-            false
-        } else {
-            this.toDoList.removeAt(toDoList.indexOf(foundToDoEntity))
-            true
-        }
+//        return if(foundToDoEntity == null) {
+//            false
+//        } else {
+//            this.toDoList.removeAt(toDoList.indexOf(foundToDoEntity))
+//            true
+//        }
     }
 }

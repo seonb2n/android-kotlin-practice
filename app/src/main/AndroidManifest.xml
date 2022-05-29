@@ -12,7 +12,7 @@
         android:theme="@style/Theme.KotlinApplication"
         android:name=".ToDoApplication">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.list.ListActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -7,17 +7,22 @@ import com.example.kotlinapplication.data.repository.DefaultToDoRepository
 import com.example.kotlinapplication.data.repository.ToDoRepository
 import com.example.kotlinapplication.domain.todo.*
 import com.example.kotlinapplication.domain.todo.DeleteAllToDoItemUseCase
-import com.example.kotlinapplication.domain.todo.DeletelToDoItemUseCase
+import com.example.kotlinapplication.domain.todo.DeleteToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.GetToDoItemUseCase
 import com.example.kotlinapplication.domain.todo.GetToDoListUseCase
 import com.example.kotlinapplication.presentation.detail.DetailMode
 import com.example.kotlinapplication.presentation.detail.DetailViewModel
 import com.example.kotlinapplication.presentation.list.ListViewModel
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 internal val appModule = module {
+
+    single { Dispatchers.Main }
+    single { Dispatchers.IO }
+
     //ViewModel
     viewModel { ListViewModel(get(), get(), get()) }
     viewModel { (detailMode: DetailMode, id: Long) ->
@@ -38,7 +43,7 @@ internal val appModule = module {
     factory { UpdateToDoUseCase(get()) }
     factory { GetToDoItemUseCase(get()) }
     factory { DeleteAllToDoItemUseCase(get()) }
-    factory { DeletelToDoItemUseCase(get()) }
+    factory { DeleteToDoItemUseCase(get()) }
 
     //Repository
     single<ToDoRepository> { DefaultToDoRepository(get(), get()) }
